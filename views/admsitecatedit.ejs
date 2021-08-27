@@ -1,0 +1,41 @@
+<% include partials/adminheader.ejs %>
+    <div class="container mb-3">
+            <h1 class="formheading">EDIT SITE CATEGORY<i class="fa fa-edit"></i></h1>
+            <form action="/adminsitecat/<%= editedcat._id %>?_method=PUT" method="POST">
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Category name:</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <input class="admstudyinput" type="text" name="catname" value="<%= editedcat.sitecatname %>">
+                    </div>  
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                        <h6>Description/Detail:</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <textarea id="sitecatdetail" class="text" cols="55" rows ="8" name="sitecatdetail"><%= editedcat.sitecatdetail %></textarea>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                        <h6>Display Order :</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <input class="admstudyinput" type="text" name="sitecatorder" value="<%= editedcat.sitecatorder %>">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <button class="btn btn-lg btn-block btn-dark" type="submit">ADD</button> 
+                        </div>
+                </div>
+            </form>
+    </div>
+
+<% include partials/adminfooter.ejs %>

@@ -1,0 +1,84 @@
+<% include partials/adminheader.ejs %>
+<div class="formstudy">
+                <h1 class="formheading">NEW STUDY CATEGORY<i class="fa fa-plus"></i></h1>
+
+                <form action="/adminstudycat" method="POST">
+                    <div class="container">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Category:</h6> 
+                            </div>
+                            <div class="col-md-3 col-lg-6">
+                                <input class="admstudyinput" type="text" name="adminstudycat" placeholder="Enter Study Category">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Details:</h6> 
+                                </div>
+                                <div class="col-md-3 col-lg-6">
+                                    <textarea id="studycatdetail" class="text" cols="50" rows ="8" name="studycatdetail" placeholder="Category details to display under the Cateogory/Heading"></textarea>
+                                </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Display order:</h6> 
+                                </div>
+                                <div class="col-md-3 col-lg-6">
+                                    <input class="admstudyinput" type="text" name="studycatorder" placeholder="Should be a number">
+                                </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                                <div class="col-md-6 col-lg-12">
+                                    <button class="btn btn-lg btn-block btn-dark" type="submit">ADD</button> 
+                                </div>
+                        </div>
+                        <hr>
+                    </div>
+                </form>
+
+</div>
+<hr>
+<div class="container">
+<div">
+                <div class="container">
+                        <% studycat.forEach(function(catitem){ %>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Category Name: </h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">
+                                    <%= catitem.studycatname %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <h6>Category Detail: </h6> 
+                                    </div> 
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= catitem.studycatdetail %>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Display order: </h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">
+                                    <%= catitem.studycatorder %>
+                                </div>
+                            </div>
+                            <Form class="admform" action="/Adminstudycat/<%= catitem._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                                <button class="admbutton"><i class="fa fa-trash"></i></button>
+                            </Form>
+                            <a href="/adminstudycat/<%= catitem._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                            <hr>
+                        <% }); %>
+                </div>
+
+</div>
+</div>
+<% include partials/adminfooter.ejs %>

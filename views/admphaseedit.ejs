@@ -1,0 +1,76 @@
+<% include partials/adminheader.ejs %>
+<div class="container mb-5">
+    <div class="formgroup border border-dark">
+            <h1 class="formheading">EDIT PHASE FIELD<i class="fa fa-edit"></i></h1>
+            <form action="/adminphase/<%= returnedphasefields._id %>?_method=PUT" method="POST">
+                        <div class="row mb-2 mt-2 justify-content-md-center">
+                            <div class="col-md-3 col-lg-3">
+                                Category: 
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <select name="catname">
+                                <% phasecats.forEach(function(phasecatitem){ %>
+                                        <option value="<%= phasecatitem.phasecatname %>" <% if (returnedphasefields.phasecatname == phasecatitem.phasecatname ) { %> Selected <% } %>><%= phasecatitem.phasecatname %></option>
+                                <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2 mt-2 justify-content-md-center">
+                            <div class="col-md-3 col-lg-3">
+                                Field Name:
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <input class="admstudyinput" type="text" name="fieldname" value="<%= returnedphasefields.fieldname %>">
+                            </div>
+                        </div>
+                        <div class="row mb-2 mt-2 justify-content-md-center">
+                            <div class="col-md-3 col-lg-3">
+                                Field input type: 
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <select name="fieldinputtype" id="inputtype">
+                                    <option value="Text Box" <% if (returnedphasefields.fieldinputtype == "Text Box") { %> Selected <% } %>>Text Box</option>
+                                    <option value="Text Area" <% if (returnedphasefields.fieldinputtype == "Text Area") { %> Selected <% } %>>Text Area</option>
+                                    <option value="Checkbox" <% if (returnedphasefields.fieldinputtype == "Checkbox") { %> Selected <% } %>>Checkbox</option>
+                                    <option value="Radio" <% if (returnedphasefields.fieldinputtype == "Radio") { %> Selected <% } %>>Radio</option>
+                                    <option value="TextBox with Checkbox" <% if (returnedphasefields.fieldinputtype == "TextBox with Checkbox") { %> Selected <% } %>>TextBox with Checkbox</option>
+                                    <option value="TextBox with Radio" <% if (returnedphasefields.fieldinputtype == "TextBox with Radio") { %> Selected <% } %>>TextBox with Radio</option>
+                                    <option value="Checkbox with Other" <% if (returnedphasefields.fieldinputtype == "Checkbox with Other") { %> Selected <% } %>>Checkbox with Other</option>                                
+                                    <option value="Radio with Other" <% if (returnedphasefields.fieldinputtype == "Radio with Other") { %> Selected <% } %>>Radio with Other</option>                                
+                                    <option value="Date" <% if (returnedphasefields.fieldinputtype == "Date") { %> Selected <% } %>>Date</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2 mt-2 justify-content-md-center" id="checkboxvalues">
+                            <div class="col-md-3 col-lg-3">
+                                Checkbox Values:
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <input class="admstudyinput" type="text" name="checkboxvalues" value="<%= returnedphasefields.checkboxvalues %>">
+                            </div>
+                        </div>
+                        <div class="row mb-2 mt-2 justify-content-md-center" id="radiovalues">
+                            <div class="col-md-3 col-lg-3">
+                                Radio Values:
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <input class="admstudyinput" type="text" name="radiovalues" value="<%= returnedphasefields.radiovalues %>">
+                            </div>
+                        </div>
+                        <div class="row mb-2 mt-2 justify-content-md-center">
+                            <div class="col-md-3 col-lg-3">
+                                Display Order:
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <input class="admstudyinput" type="text" name="fieldorder" value="<%= returnedphasefields.fieldorder %>">
+                            </div>
+                        </div>
+                        <div class="row mb-2 mt-2 justify-content-md-center">
+                            <div class="col-md-6 col-lg-6">
+                                <button class="btn btn-lg btn-dark" type="submit">UPDATE</button>
+                            </div>
+                        </div>
+            </form>
+    </div>
+</div>
+<% include partials/adminfooter.ejs %>

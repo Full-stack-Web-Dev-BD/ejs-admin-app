@@ -1,0 +1,48 @@
+<% include partials/adminheader.ejs %>
+<div class="container">
+    <h1 class="formheading">PHASE INFORMATION</i></h1>
+        <div class="container">
+            <div class="container">
+                <hr class="listhr">
+                <% phases.forEach(function(phase){  %>
+                    <% phasecats.forEach(function(cat){ %>
+                        <div class="container bg-info text-white">
+                            <h2 class="mb-0"><%= cat.phasecatname %></h2>
+                            <Small><%= cat.phasecatdetail %> </Small>
+                        </div>
+                        <hr>
+                        <% phasefields.forEach(function(field){ %>
+                            <% if (field.phasecatname == cat.phasecatname ) { %>
+                                <% if (phase[field.fieldname]) { %> 
+                                    <div class="row mb-2 mt-2">
+                                        <div class="col-md-3 col-lg-3">
+                                                <h6><%= field.fieldname %> </h6>
+                                        </div>
+                                        <% if (typeof(phase[field.fieldname]) === 'object') { %>
+                                            <div class="col-md-3 col-lg-6">
+                                                <%= Object.values(phase[field.fieldname]) %>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="col-md-3 col-lg-6">
+                                                <%= phase[field.fieldname] %>
+                                            </div>
+                                        <% } %>
+                                    </div>                                                    
+                                <% } %>
+                            <% } %>
+                        <% }); %>
+                        <hr>
+                    <% }); %>
+                    <Form class="admform" action="/phase/<%= phase._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                        <button class="admbutton"><i class="fa fa-trash"></i></button>
+                    </Form>
+                    <a href="/phase/<%= phase._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                    <hr class="listhr">
+                             
+                <% }); %>
+            </div>
+        </div>
+    </h1>
+</div>
+
+<% include partials/adminfooter.ejs %>

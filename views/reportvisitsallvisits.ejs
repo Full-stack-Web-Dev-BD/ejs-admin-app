@@ -1,0 +1,44 @@
+<% include partials/adminheader.ejs %>
+    <h1 class="formheading mb-2">REPORTS - ALL VISITS (For Database export) <a href="/reports/visits/allvisits/exportcsv" class="head-right">Export CSV</a></h1>
+    <table class="table table-warning">
+        <thead class="table-primary">
+          <tr>
+            <th scope="col">Visit Date</th>
+            <th scope="col">Subject ID</th>
+            <th scope="col">Study ID</th>
+            <th scope="col">Site ID</th>
+            <th scope="col">Phase ID</th>
+        <% visitfields.forEach(function(field){ %>
+            <th scope="col"><%= field.fieldname %></th>
+        <% }); %>
+          </tr>
+        </thead>
+        <tbody>
+            <% visits.forEach(function(visit){ %>
+            <tr>
+                <th scope="row"><%= visit.Visit_date %></th>
+                <td><%= visit.Subject %></td>
+                <td><%= visit.Study %></td>
+                <td><%= visit.Site %></td>
+                <td><%= visit.Phase %></td>
+                <% visitfields.forEach(function(field){ %>
+                    <% if (visit[field.fieldname]) { %> 
+                        <% if (typeof(visit[field.fieldname]) === 'object') { %>
+                        <td>
+                            <%= Object.values(visit[field.fieldname]) %>
+                        </td>
+                        <% } else { %>
+                        <td>
+                            <%= visit[field.fieldname] %>
+                        
+                        <% } %>
+                    <% } else { %>
+                        <td></td>
+                    <% } %>
+                <% }); %>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <hr class="listhr">
+<% include partials/adminfooter.ejs %>

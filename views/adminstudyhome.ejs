@@ -1,0 +1,48 @@
+<% include partials/adminheader.ejs %>
+<div class="container">
+    <h1 class="formheading">STUDY INFORMATION</i></h1>
+        <div class="container">
+            <div class="container">
+                <hr class="listhr">
+                <% study.forEach(function(study){  %>
+                    <% studycats.forEach(function(cat){ %>
+                        <div class="container bg-info text-white">
+                            <h2 class="mb-0"><%= cat.studycatname %></h2>
+                            <Small><%= cat.studycatdetail %> </Small>
+                        </div>
+                        <hr>
+                        <% studyfields.forEach(function(field){ %>
+                            <% if (field.studycatname == cat.studycatname ) { %>
+                                <% if (study[field.fieldname]) { %> 
+                                    <div class="row mb-2 mt-2">
+                                        <div class="col-md-3 col-lg-3">
+                                                <h6><%= field.fieldname %> </h6>
+                                        </div>
+                                        <% if (typeof(study[field.fieldname]) === 'object') { %>
+                                            <div class="col-md-3 col-lg-6">
+                                                <%= Object.values(study[field.fieldname]) %>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="col-md-3 col-lg-6">
+                                                <%= study[field.fieldname] %>
+                                            </div>
+                                        <% } %>
+                                    </div>                                                    
+                                <% } %>
+                            <% } %>
+                        <% }); %>
+                        <hr>
+                    <% }); %>
+                    <Form class="admform" action="/adminstudyhome/<%= study._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                        <button class="admbutton"><i class="fa fa-trash"></i></button>
+                    </Form>
+                    <a href="/adminstudyhome/<%= study._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                    <hr class="listhr">
+                             
+                <% }); %>
+            </div>
+        </div>
+    </h1>
+</div>
+
+<% include partials/adminfooter.ejs %>

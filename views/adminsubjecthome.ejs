@@ -1,0 +1,51 @@
+<% include partials/adminheader.ejs %>
+<div class="container">
+    <h1 class="formheading">SUBJECT INFORMATION</i></h1>
+        <div class="container">
+            <div class="container">
+                <hr class="listhr">
+                <% subjects.forEach(function(subject){  %>
+                    <% subjectcats.forEach(function(cat){ %>
+                        <div class="container bg-info text-white mb-0">
+                            <h2 class="mb-0"><%= cat.subjectcatname %></h2>
+                            <Small class="mb-0 mt-0"><%= cat.subjectcatdetail %> </Small>
+                        </div>
+                        <hr>
+                        <% subjectfields.forEach(function(field){ %>
+                            <% if (field.subjectcatname == cat.subjectcatname ) { %>
+                                <% if (subject[field.fieldname]) { %> 
+                                    <div class="row mb-2 mt-2">
+                                        <div class="col-md-3 col-lg-3">
+                                                <h6><%= field.fieldname %> </h6>
+                                        </div>
+                                        <% if (typeof(subject[field.fieldname]) === 'object') { %>
+                                            <div class="col-md-3 col-lg-6">
+                                                <%= Object.values(subject[field.fieldname]) %>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="col-md-3 col-lg-6">
+                                                <%= subject[field.fieldname] %>
+                                            </div>
+                                        <% } %>
+                                    </div>                                                    
+                                <% } %>
+                            <% } %>
+                        <% }); %>
+                        <hr>
+                    <% }); %>
+                    <br>
+                    <Form class="admform" action="/adminsubjecthome/<%= subject._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                        <button class="admbutton"><i class="fa fa-trash"></i></button>
+                    </Form>
+                    <a href="/adminsubjecthome/<%= subject._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                    <a href="/Adminsubjecthome/<%= subject._id %>/visit/new"><button class="admbutton"><i class="fas fa-clinic-medical"></i></button></a>
+
+                    <hr class="listhr">
+                             
+                <% }); %>
+            </div>
+        </div>
+    </h1>
+</div>
+
+<% include partials/adminfooter.ejs %>

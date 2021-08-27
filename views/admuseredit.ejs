@@ -1,0 +1,42 @@
+<% include partials/adminheader.ejs %>
+    <div class="formstudy">
+            <h1 class="formheading">EDIT USER<i class="fa fa-edit"></i></h1>
+            <form action="/adminuser/<%= user._id %>?_method=PUT" method="POST">
+            <div class="container">
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Username:</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <span class="admstudyinput"><%= user.username %></span>
+                    </div>  
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Full name:</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <input class="admstudyinput" type="text" name="fullname" value="<%= user.fullname %>">
+                    </div>  
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Field type:</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <select name="role">
+                            <option value="Admin" <% if (user.role == "Admin") { %> Selected <% } %>>Admin</option>
+                            <option value="User" <% if (user.role == "User") { %> Selected <% } %>>User</option>
+                        </select>
+                    </div>  
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3 mb-3">
+                        <button class="btn btn-sm btn-block btn-dark" type="submit">UPDATE</button> 
+                    </div>
+                </div>
+            </div> 
+            </form>
+    </div>
+
+<% include partials/adminfooter.ejs %>

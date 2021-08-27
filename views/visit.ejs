@@ -1,0 +1,146 @@
+<% include partials/adminheader.ejs %>
+<div class="formstudy">
+                <h1 class="formheading">SUBJECT SEARCH<i class="fa fa-plus"></i></h1>
+
+                <form action="/visit" method="POST">
+                    <div class="container">
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Subject name:</h6> 
+                            </div>
+                            <div class="col-md-3 col-lg-6">
+                                <input class="admstudyinput" type="text" name="user" placeholder="Enter subject's  name">
+                            </div>
+                        </div>
+                        <div class="row mb-0 mt-2 justify-content-md-center">
+                            <div class="col-md-6">
+                                <button class="btn btn-sm btn-dark mb-3" type="submit">SEARCH</button>
+                            </div>
+                        </div>
+                   </div>
+                </form>
+
+</div>
+<hr>
+<div class="container mb-2">
+        <% returnedsubjects.forEach(function(subject){ %>
+            <div class="row mb-2 mt-2">
+                <div class="col-md-3 col-lg-3">
+                    <h6>Subject Name</h6>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <%= subject.Subject_Name %>
+                </div>
+            </div>
+            <div class="row mb-2 mt-2">
+                <div class="col-md-3 col-lg-3">
+                    <h6>Subject Date of Birth</h6>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <%= subject.Subject_DOB %>
+                </div>
+            </div>
+            <div class="row mb-2 mt-2">
+                <div class="col-md-3 col-lg-3">
+                    <h6>Subject Address</h6>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <%= subject.Subject_Address %>, <%= subject.Subject_City %>, <%= subject.Subject_Prov %>, <%= subject.Subject_zip %>, <%= subject.Subject_Country %> 
+                </div>
+            </div>
+            <a href="/visit/subject/<%= subject._id %>"><button type="button" class="btn btn-info">SEE VISITS</button></a>
+        <% }); %>
+</div>
+<div class="container">
+<h1 class="formheading">VISITS LIST</h1>
+<hr class="listhr">
+
+    <% visits.forEach(function(visit){ %>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3 col-lg-3">
+                <h6>Visit Date</h6>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <%= visit.Visit_date %>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3 col-lg-3">
+                <h6>Subject Name</h6>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <%= visit.Subject.Subject_Name %>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3 col-lg-3">
+                <h6>Subject DOB</h6>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <%= visit.Subject.Subject_DOB %>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3 col-lg-3">
+                <h6>Study Short name</h6>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <%= visit.Study.Study_Short_name %>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3 col-lg-3">
+                <h6>Site Short name</h6>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <%= visit.Site.Site_Short_name %>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3 col-lg-3">
+                <h6>Phase number</h6>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <%= visit.Phase.Phase_number %>
+            </div>
+        </div>
+            <% visitcats.forEach(function(cat){ %>
+                <div class="container bg-info text-white">
+                    <h5 class="mb-0"><b><%= cat.visitcatname %></b></h5>
+                    <Small><%= cat.visitcatdetail %> </Small>
+                </div>
+                <hr>
+                <% visitfields.forEach(function(field){ %>
+                    <% if (field.visitcatname == cat.visitcatname ) { %>
+                        <% if (visit[field.fieldname]) { %> 
+                            <div class="row mb-2 mt-2">
+                                <div class="col-md-3 col-lg-3">
+                                        <h6><%= field.fieldname %> </h6>
+                                </div>
+                                <% if (typeof(visit[field.fieldname]) === 'object') { %>
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= Object.values(visit[field.fieldname]) %>
+                                    </div>
+                                <% } else { %>
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= visit[field.fieldname] %>
+                                    </div>
+                                <% } %>
+                            </div>                                                    
+                        <% } %>
+                    <% } %>
+                <% }); %>
+                <hr>
+            <% }); %>
+            <Form class="admform" action="/visit/subject/<%= visit._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                <button class="admbutton"><i class="fa fa-trash"></i></button>
+            </Form>
+            <a href="/visit/subject/<%= visit._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+        <hr class="listhr">
+    <% }); %>
+
+</div>
+
+
+<% include partials/adminfooter.ejs %>

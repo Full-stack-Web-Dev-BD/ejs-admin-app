@@ -1,0 +1,191 @@
+html {
+    height: 100%;
+}
+
+body {
+    font-family: Lato;
+    font-size: 0.8em;
+}
+
+.homebody {
+    font-family: Lato;
+    background: url("/images/grass.jpg");
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+}
+
+.label {
+    font-family: Lato;
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.btn {
+    font-family: Lato;
+    font-weight: 700;
+}
+
+.formheading {
+    font-family: Lato;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    /* text-align: center;  */
+    margin: 0;
+    background: #2980b9;
+    padding: 10px 20px;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    height: 40px;
+    line-height: 40px;
+    padding: 6px 6px 6px 8px;
+}
+
+.admstudyinput {
+    font-size: 12px;
+    height: 25px;
+    width: auto;
+    padding: 4px 4px 4px 6px;
+    box-sizing: border-box;
+}
+
+.logininput {
+    font-size: 12px;
+    height: 25px;
+    width: 25%;
+    padding: 4px 4px 4px 6px;
+    box-sizing: border-box;
+}
+
+.nav-bar {
+    font-weight: 100;
+}
+
+.nav-item {
+    font-weight: 1000;
+}
+
+.nav-link:hover {
+    border-bottom: 1px solid #2980b9;
+}
+
+.admstudyinput:focus {
+    border: 1px solid #2980b9;
+    outline: none;
+}
+
+h6 {
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.admform {
+    display: inline;
+}
+
+.formstudy {
+    margin: 30px auto;
+    width: 500px;
+    background: #f7f7f7;
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+    font-weight: 700;
+    text-align: left;
+}
+.listhr {
+    border: none;
+    height: 5px;
+    background-color: #333;
+}
+.formsite {
+    margin: 30px auto;
+    width: 420px;
+    height: 500px auto;
+    background: #f7f7f7;
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+    font-weight: 700;
+    text-align: left;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.configuration {
+    margin: 30px auto;
+    width: 800px;
+    height: 400px;
+    background: #f7f7f7;
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+    font-weight: 700;
+    text-align: left;
+}
+
+.admbutton {
+    border: none;
+    background: none;
+}
+
+h1 {
+    font-family: Lato;
+    /* font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; PRETTY GOOD FONT for headings  */ 
+}
+
+hr.homehr {
+    border-top: 2px solid #ffffff;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4); /* Shadow */
+}
+
+span.copyright {
+    font-size: 50%;
+    vertical-align: super;
+}
+
+h1.homeh1 {
+    font-weight: 700; /* bold */
+    font-size: 4em;
+}
+
+/*
+.homeh3 {
+    color: #ffffff;
+}
+*/
+
+#homecontent {
+    text-align: center;
+    padding-top: 32%;
+}
+
+#footer {
+    font-weight: 700; /* bold */
+}
+
+.alert {
+    text-align: center; 
+}
+
+.fa-plus {
+    float: right;
+}
+
+.head-right {
+    float: right;
+    color: #ffffff;
+}
+
+.fa-edit {
+    float: right;
+}
+
+span.sgl-space {
+    padding-left:1em;
+}

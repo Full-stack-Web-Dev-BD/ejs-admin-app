@@ -1,0 +1,238 @@
+<% include partials/adminheader.ejs %>
+<div class="container">
+    <div class="container">
+        <div class="container">
+            <div class="container">
+                <h1 class="formheading  border border-dark">NEW VISIT FIELD<i class="fa fa-plus"></i></h1>
+                <form action="/adminvisit" method="POST" id="formtryals" class="border border-dark">
+                <div class="container">
+                    <div class="row mb-2 mt-2 justify-content-md-center">
+                        <div class="col-md-3 col-lg-3">
+                            <h6>Category/Heading:</h6>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <select name="catname">
+                                <% visitcats.forEach(function(visitcatitem){ %>
+                                    <option value="<%= visitcatitem.visitcatname %>"><%= visitcatitem.visitcatname %></option>
+                                <% }); %>
+                            </select>
+                            <b>
+                                <a href="/adminvisitcat">Add/Edit/Delete</a>
+                            </b>
+                        </div>
+                    </div>
+                    <div class="row mb-2 mt-2 justify-content-md-center">
+                        <div class="col-md-3 col-lg-3">
+                            <h6>Field Name:</h6>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <input class="admstudyinput" type="text" name="fieldname" placeholder="Enter the name of the field">
+                        </div>
+                    </div>
+                    <div class="row mb-2 mt-2 justify-content-md-center">
+                        <div class="col-md-3 col-lg-3">
+                            <h6>Field input type:</h6>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <select name="fieldinputtype" id="inputtype">
+                                    <option value="Text Box">Text Box</option>
+                                    <option value="Text Area">Text Area</option>
+                                    <option value="Checkbox">Checkbox</option>
+                                    <option value="Radio">Radio</option>
+                                    <option value="Checkbox with Other">Checkbox with Other</option>                                
+                                    <option value="Radio with Other">Radio with Other</option>
+                                    <option value="File">File</option>
+                                    <option value="Date">Date</option>                                  
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2 mt-2 justify-content-md-center" id="checkboxvalues">
+                        <div class="col-md-3 col-lg-3">
+                            <h6>Checkbox Values:</h6>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <input class="admstudyinput" type="text" name="checkboxvalues" placeholder="checkboxvalues">
+                        </div>
+                    </div>
+                    <div class="row mb-2 mt-2 justify-content-md-center" id="radiovalues">
+                        <div class="col-md-3 col-lg-3">
+                            <h6>Radio Values:</h6>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <input class="admstudyinput" type="text" name="radiovalues" placeholder="radiovalues">
+                        </div>
+                    </div>
+                    <div class="row mb-2 mt-2 justify-content-md-center">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Display Order:</h6>
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <input class="admstudyinput" type="text" name="fieldorder" placeholder="Should be a number">
+                            </div>
+                    </div>
+                    <div class="row mb-2 mt-2 justify-content-md-center">
+                        <div class="col-md-6">
+                            <button class="btn btn-sm btn-dark" type="submit">ADD</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container">
+                <div class="container">
+                    <h5 class="mb-4 bg-info text-white"><b>Default Values</b></h5>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field Name: </h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Subject
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field form type:</h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Auto-selected Subject
+                            </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field Name: </h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Study
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field form type:</h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Drop down
+                            </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field Name: </h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Site
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field form type:</h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Drop down
+                            </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field Name: </h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Phase
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field form type:</h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Drop down
+                            </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field Name: </h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Visit_date
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Field form type:</h6> 
+                            </div> 
+                            <div class="col-md-3 col-lg-6">
+                                 Date
+                            </div>
+                    </div>
+                    <hr>
+                    <% visitcats.forEach(function(catitem) {%>
+                        <h5 class="mb-4 bg-info text-white"><b><%= catitem.visitcatname %> - <%= catitem.visitcatorder %> </b></h5>
+                        <% visitadmin.forEach(function(fielditem){ %>
+                            <% if (fielditem.visitcatname == catitem.visitcatname ) { %>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Category Name: </h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">
+                                    <%= fielditem.visitcatname %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Field Name: </h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">
+                                    <%= fielditem.fieldname %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Field form type:</h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">                
+                                    <%= fielditem.fieldinputtype %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <h6>Checkbox Values</h6> 
+                                    </div> 
+                                    <div class="col-md-3 col-lg-6">                
+                                        <%= fielditem.checkboxvalues %>
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Radio Values</h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">                
+                                    <%= fielditem.radiovalues %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Display order:</h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">                
+                                    <%= fielditem.fieldorder %>
+                                </div>
+                            </div>
+                            <Form class="admform" action="/adminvisit/<%= fielditem._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                                <button class="admbutton"><i class="fa fa-trash"></i></button>
+                            </Form>
+                            <a href="/adminvisit/<%= fielditem._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                            <hr>
+                            <% } %>
+                        <% }); %>
+                    <% }); %>
+                </div>
+
+</div>
+</div>
+
+<% include partials/adminfooter.ejs %>

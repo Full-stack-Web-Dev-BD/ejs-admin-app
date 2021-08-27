@@ -1,0 +1,26 @@
+<% include partials/adminheader.ejs %>
+    <div class="formstudy">
+             <h1 class="formheading">CHANGE PASSWORD<i class="fa fa-key"></i></h1>
+            <form action="/admusrpwreset/<%= user._id %>" method="POST">
+                    <UL>
+                        <Li>
+                            Username  : <span class="admstudyinput"><%= user.username %></span>
+                            <!-- <input class="admstudyinput" type="text" name="username" value="<%= user.username %>"> -->
+                        </Li>
+                        <Li>
+                            Password : 
+                            <input class="admstudyinput" type="password" name="password" placeholder="Minumum 8 characters">
+                        </Li>
+                        <Li>
+                            Confirm : 
+                            <input class="admstudyinput" type="password" name="confirm" placeholder="Confirm the password">
+                        </Li>
+                        <Li>
+                            <button class="btn btn-lg btn-block btn-dark" type="submit">RESET</button>
+                        </Li>
+                    </UL> 
+            </form>
+            
+    </div>
+
+<% include partials/adminfooter.ejs %>

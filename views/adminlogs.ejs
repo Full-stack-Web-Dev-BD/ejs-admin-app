@@ -1,0 +1,24 @@
+<% include partials/adminheader.ejs %>
+<div class="container">
+    <h1 class="formheading mb-2">Logs <a href="/reports/visits/allvisits/exportcsv" class="head-right">Export CSV</a></h1>
+    <hr>
+    <table class="table table-warning">
+        <thead class="table-primary">
+            <tr>
+            <th scope="col">Date</th>
+            <th scope="col">User</th>
+            <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% logs.forEach(function(log){ %>
+                <tr>
+                    <td><%= log.logDate %></td>
+                    <td><%= log.logUser %></td>
+                    <td><%= log.logAction %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>
+<% include partials/adminfooter.ejs %>

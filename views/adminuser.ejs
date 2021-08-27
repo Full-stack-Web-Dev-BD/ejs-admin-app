@@ -1,0 +1,90 @@
+<% include partials/adminheader.ejs %>
+<div class="formstudy">
+                <h1 class="formheading">CREATE USER<i class="fa fa-plus"></i></h1>
+                <form action="/adminuser" method="POST">
+                <div class="container">
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                        Full name
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        <input class="admstudyinput" type="text" name="fullname" placeholder="First name and Last name">
+                    </div>           
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                        Username
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        <input class="admstudyinput" type="text" name="username" placeholder="Enter a username">
+                    </div>           
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                        Password
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        <input class="admstudyinput" type="password" name="password" placeholder="Minumum 8 characters">
+                    </div>           
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-md-3 col-lg-3">
+                        Role
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        <select name="role">
+                            <% roles.forEach(function(eachrole){ %>
+                                <option value="<%= eachrole.role %>"><%= eachrole.role %></option>
+                            <% }); %>
+                        </select>
+                    </div>           
+                </div>
+                <div class="row mb-3 mt-3">
+                    <div class="col-md-3 col-lg-3 mb-3">
+                        <button class="btn btn-sm btn-block btn-dark" type="submit">ADD</button>
+                    </div>
+                </div>
+                </div>
+                </form>
+</div>
+<hr>
+<div class="container">
+    <div">
+                    <div class="container">
+                            <% users.forEach(function(eachuser){ %>
+                                <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <h6>Full name: </h6> 
+                                    </div> 
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= eachuser.fullname %>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <h6>Username: </h6> 
+                                    </div> 
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= eachuser.username %>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <h6>Role: </h6> 
+                                    </div> 
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= eachuser.role %>
+                                    </div>
+                                </div>
+                                <Form class="admform" action="/adminuser/<%= eachuser._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                                    <button class="admbutton"><i class="fa fa-trash"></i></button>
+                                </Form>
+                                <a href="/adminuser/<%= eachuser._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                                <a href="/adminuser/<%= eachuser._id %>/admusrpwreset"><button class="admbutton"><i class="fas fa-key"></i></button></a>
+                                <hr>
+                            <% }); %>
+                    </div>
+
+    </div>
+</div>
+<% include partials/adminfooter.ejs %>

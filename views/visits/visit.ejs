@@ -1,0 +1,185 @@
+<% include ../partials/adminheader.ejs %>
+<!--
+    got this code from adminsiteconfig.ejs. Come back to that later
+-->
+<div class="container mb-5">
+        <h1 class="formheading">ADD VISIT for <%= subject.Subject_Name%> <i class="fa fa-plus"></i></h1>
+        <form action="/Adminsubjecthome/<%= subject._id %>/visit" method="POST">
+            <hr>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                        <h6>Subject</h6> 
+                    </div> 
+                    <div class="col-md-3 col-lg-6">
+                        <%= subject.Subject_Name %>
+                        <input id="visit[Subject]" name="visit[Subject]" type="hidden" value="<%= subject._id %>">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Study</h6> 
+                    </div>
+
+                    <div class="col-md-3 col-lg-6">
+                        <select name="visit[Study]">
+                            <% returnedstudy.forEach(function(study){ %>
+                                <option value="<%= study._id %>"><%= study.Study_short_name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Site</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <select name="visit[Site]">
+                            <% returnedsite.forEach(function(site){ %>
+                                <option value="<%= site._id %>"><%= site.Site_short_name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                            <h6>Phase</h6> 
+                    </div>
+                    <div class="col-md-3 col-lg-6">
+                        <select name="visit[Phase]">
+                            <% returnedphase.forEach(function(phase){ %>
+                                <option value="<%= phase._id %>"><%= phase.Phase_number %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                        <h6>Visit_date</h6> 
+                    </div> 
+                    <div class="col-md-3 col-lg-6">
+                        <input class="admstudyinput" type="date" name="visit[Visit_date]">
+                    </div>
+                </div>
+                <hr>
+                <!-- Custom fields - start -->
+                <% visitcats.forEach(function(catitem) {%>
+                    <hr>
+                    <div class="container bg-info text-white">
+                        <h2 class="mb-0"><%= catitem.visitcatname %></h2>
+                        <Small class="mb-0 mt-0"><%= catitem.visitcatdetail %> </Small>
+                    </div>
+                    <hr>
+                    <div class="container">
+                            <% visitfields.forEach(function(fielditem){ 
+                                if (fielditem.visitcatname == catitem.visitcatname ) { %>
+                                    <% if (fielditem.fieldinputtype === "Text Box") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>:</h6> 
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                                <input class="admstudyinput" type="text" name="visit[<%= fielditem.fieldname %>]" placeholder="<%= fielditem.fieldname %>">
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (fielditem.fieldinputtype === "Text Area") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>: </h6> 
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                                <textarea id="visit[<%= fielditem.fieldname %>]" class="text" cols="55" rows ="8" name="visit[<%= fielditem.fieldname %>]" placeholder="<%= fielditem.fieldname %>"></textarea>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (fielditem.fieldinputtype === "Checkbox") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>: </h6> 
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                            <% fielditem.checkboxvalues.forEach(function(chkitem) {%>
+                                                <input type="checkbox" id="visit[<%= fielditem.fieldname %>]" name="visit[<%= fielditem.fieldname %>]" value="<%= chkitem %>">
+                                                <label for="visit[<%= fielditem.fieldname %>]"><%= chkitem %></label>
+                                            <% }); %>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (fielditem.fieldinputtype === "Radio") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>: </h6> 
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                            <% fielditem.radiovalues.forEach(function(radioitem) {%>
+                                                <input type="radio" id="visit[<%= fielditem.fieldname %>]" name="visit[<%= fielditem.fieldname %>]" value="<%= radioitem %>">
+                                                <label for="visit[<%= fielditem.fieldname %>]"><%= radioitem %></label>
+                                            <% }); %>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (fielditem.fieldinputtype === "Checkbox with Other") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>: </h6> 
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                            <% fielditem.checkboxvalues.forEach(function(chkitem) {%>
+                                                <input type="checkbox" id="visit[<%= fielditem.fieldname %>]" name="visit[<%= fielditem.fieldname %>]" value="<%= chkitem %>">
+                                                <label for="visit[<%= fielditem.fieldname %>]"><%= chkitem %></label>
+                                            <% }); %>
+                                                <input type="checkbox" id="visit[<%= fielditem.fieldname %>]" name="visit[<%= fielditem.fieldname %>]">
+                                                <label for="checkboxother">Other</label>
+                                                <input class="admstudyinput" type="text" name="visit[<%= fielditem.fieldname %>]" placeholder="checkboxother">
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (fielditem.fieldinputtype === "Radio with Other") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>: </h6> 
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                            <% fielditem.radiovalues.forEach(function(radioitem) {%>
+                                                <input type="radio" id="visit[<%= fielditem.fieldname %>]" name="visit[<%= fielditem.fieldname %>]" value="<%= radioitem %>">
+                                                <label for="visit[<%= fielditem.fieldname %>]"><%= radioitem %></label>
+                                            <% }); %>
+                                                <input type="radio" id="visit[<%= fielditem.fieldname %>]" name="visit[<%= fielditem.fieldname %>]" value="Other">
+                                                <label for="radioother">Other</label>
+                                                <input class="admstudyinput" type="text" name="visit[<%= fielditem.fieldname %>]" placeholder="radioother">
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (fielditem.fieldinputtype === "Date") { %>
+                                        <div class="row">
+                                            <div class="col-md-3 col-lg-3">
+                                                <h6><%= fielditem.fieldname %>:</h6>
+                                            </div> 
+                                            <div class="col-md-3 col-lg-6">
+                                                <input class="admstudyinput" type="Date" name="visit[<%= fielditem.fieldname %>]" placeholder="<%= fielditem.fieldname %>">
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                <hr>
+                                <% } %>
+                            <% }); %>
+                    </div>
+                <% });%>
+                <!-- Custom fields - end -->
+
+                <div class="row justify-content-md-center">
+                    <div class="col-md-3 col-lg-6">
+                        <button class="btn btn-md btn-block btn-dark" type="submit">ADD</button>
+                    </div>
+                 </div>
+            </div>
+        </form>
+        </h1>
+</div>
+
+<% include ../partials/adminfooter.ejs %>

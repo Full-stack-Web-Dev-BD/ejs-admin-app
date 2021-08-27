@@ -1,0 +1,84 @@
+<% include partials/adminheader.ejs %>
+<div class="formstudy">
+                <h1 class="formheading">NEW PHASE CATEGORY<i class="fa fa-plus"></i></h1>
+
+                <form action="/adminphasecat" method="POST">
+                    <div class="container">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <h6>Category:</h6> 
+                            </div>
+                            <div class="col-md-3 col-lg-6">
+                                <input class="admstudyinput" type="text" name="adminphasecat" placeholder="Enter Phase Category">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Details:</h6> 
+                                </div>
+                                <div class="col-md-3 col-lg-6">
+                                    <textarea id="phasecatdetail" class="text" cols="50" rows ="8" name="phasecatdetail" placeholder="Category details to display under the Cateogory/Heading"></textarea>
+                                </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Display order:</h6> 
+                                </div>
+                                <div class="col-md-3 col-lg-6">
+                                    <input class="admstudyinput" type="text" name="phasecatorder" placeholder="Should be a number">
+                                </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                                <div class="col-md-6 col-lg-12">
+                                    <button class="btn btn-lg btn-block btn-dark" type="submit">ADD</button> 
+                                </div>
+                        </div>
+                        <hr>
+                    </div>
+                </form>
+
+</div>
+<hr>
+<div class="container">
+<div">
+                <div class="container">
+                        <% phasecat.forEach(function(catitem){ %>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Category Name: </h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">
+                                    <%= catitem.phasecatname %>
+                                </div>
+                            </div>
+                            <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <h6>Category Detail: </h6> 
+                                    </div> 
+                                    <div class="col-md-3 col-lg-6">
+                                        <%= catitem.phasecatdetail %>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <h6>Display order: </h6> 
+                                </div> 
+                                <div class="col-md-3 col-lg-6">
+                                    <%= catitem.phasecatorder %>
+                                </div>
+                            </div>
+                            <Form class="admform" action="/Adminphasecat/<%= catitem._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');">
+                                <button class="admbutton"><i class="fa fa-trash"></i></button>
+                            </Form>
+                            <a href="/adminphasecat/<%= catitem._id %>/edit"><button class="admbutton"><i class="far fa-edit"></i></button></a>
+                            <hr>
+                        <% }); %>
+                </div>
+
+</div>
+</div>
+<% include partials/adminfooter.ejs %>
