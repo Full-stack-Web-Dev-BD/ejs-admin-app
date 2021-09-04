@@ -118,41 +118,48 @@ router.post("/adminstudy", middleware.isLoggedin, function (req, res) {
 });
 
 //Adminstudy EDIT route
-router.get("/adminstudy/:id/edit", middleware.isLoggedin, function (req, res) {
-  studyfields.findById(req.params.id, function (err, returnedstudyfield) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminstudy");
-    } else {
-      //console.log(req.params) //- Only displays ID because only is in the URL request
-      //console.log(returnedstudyfield); // returns the JSON of the whole field.
-      studycat.find({}, function (err, returnedcats) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.render("admstudyedit", {
-            editedstudyfield: returnedstudyfield,
-            studycats: returnedcats,
-          });
-          let datetime = new Date();
-          let logDate = datetime;
-          let logUser = req.user.username;
-          let logAction = `On the page to edit the STUDY FIELD - ${returnedstudyfield.fieldname}. Did not edit yet.`;
-          let newlog = {
-            logDate: logDate,
-            logUser: logUser,
-            logAction: logAction,
-          };
-          logs.create(newlog, function (err, newlycreatedlog) {
-            if (err) {
-              console.log(err);
-            }
-          });
-        }
-      });
-    }
-  });
-});
+router.get(
+  "/adminstudy/:id/edit",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    studyfields.findById(req.params.id, function (err, returnedstudyfield) {
+      if (err) {
+        console.log(err);
+        res.redirect("/adminstudy");
+      } else {
+        //console.log(req.params) //- Only displays ID because only is in the URL request
+        //console.log(returnedstudyfield); // returns the JSON of the whole field.
+        studycat.find({}, function (err, returnedcats) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("admstudyedit", {
+              formlist,
+              editedstudyfield: returnedstudyfield,
+              studycats: returnedcats,
+            });
+            let datetime = new Date();
+            let logDate = datetime;
+            let logUser = req.user.username;
+            let logAction = `On the page to edit the STUDY FIELD - ${returnedstudyfield.fieldname}. Did not edit yet.`;
+            let newlog = {
+              logDate: logDate,
+              logUser: logUser,
+              logAction: logAction,
+            };
+            logs.create(newlog, function (err, newlycreatedlog) {
+              if (err) {
+                console.log(err);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+);
 
 //Adminstudy UPDATE route
 router.put("/adminstudy/:id", middleware.isLoggedin, function (req, res) {
@@ -214,48 +221,55 @@ router.delete("/adminstudy/:id", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/adminstudyconfig", middleware.isLoggedin, function (req, res) {
-  //console.log(req.user); - This get the user information from the DB. Not from the login form.
-  //Get all study fields from DB
-  //studyfields.find({},function(err,returnedstudyfields){
-  studyfields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedstudyfields) {
-      if (err) {
-        console.log(err);
-      } else {
-        //studycat.find({}, function(err,returnedstudycats){
-        studycat
-          .find({})
-          .sort("studycatorder")
-          .exec(function (err, returnedstudycats) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.render("adminstudyconfig", {
-                studyadmin: returnedstudyfields,
-                studycats: returnedstudycats,
-              });
-              let datetime = new Date();
-              let logDate = datetime;
-              let logUser = req.user.username;
-              let logAction = `Visited the STUDY CREATION page`;
-              let newlog = {
-                logDate: logDate,
-                logUser: logUser,
-                logAction: logAction,
-              };
-              logs.create(newlog, function (err, newlycreatedlog) {
-                if (err) {
-                  console.log(err);
-                }
-              });
-            }
-          });
-      }
-    });
-});
+router.get(
+  "/adminstudyconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    //console.log(req.user); - This get the user information from the DB. Not from the login form.
+    //Get all study fields from DB
+    //studyfields.find({},function(err,returnedstudyfields){
+    studyfields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedstudyfields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          studycat
+            .find({})
+            .sort("studycatorder")
+            .exec(function (err, returnedstudycats) {
+              if (err) {
+                console.log(err);
+              } else {
+                res.render("adminstudyconfig", {
+                  studyadmin: returnedstudyfields,
+                  formlist,
+                  studycats: returnedstudycats,
+                });
+                let datetime = new Date();
+                let logDate = datetime;
+                let logUser = req.user.username;
+                let logAction = `Visited the STUDY CREATION page`;
+                let newlog = {
+                  logDate: logDate,
+                  logUser: logUser,
+                  logAction: logAction,
+                };
+                logs.create(newlog, function (err, newlycreatedlog) {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
+              }
+            });
+        }
+      });
+  }
+);
 
 function cleansing(study) {
   var newstudy = {};
@@ -302,7 +316,9 @@ router.post("/adminstudyconfig", middleware.isLoggedin, function (req, res) {
 });
 
 //adminstudy category
-router.get("/adminstudycat", middleware.isLoggedin, function (req, res) {
+router.get("/adminstudycat", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   //Get all study fields from DB
   studycat
     .find({})
@@ -311,7 +327,7 @@ router.get("/adminstudycat", middleware.isLoggedin, function (req, res) {
       if (err) {
         console.log(err);
       } else {
-        res.render("adminstudycat", { studycat: returnedstudycat });
+        res.render("adminstudycat", { formlist, studycat: returnedstudycat });
         let datetime = new Date();
         let logDate = datetime;
         let logUser = req.user.username;
@@ -445,7 +461,9 @@ router.delete("/adminstudycat/:id", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/adminstudyhome", middleware.isLoggedin, function (req, res) {
+router.get("/adminstudyhome", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   studyfields
     .find({})
     .sort("fieldorder")
@@ -467,6 +485,7 @@ router.get("/adminstudyhome", middleware.isLoggedin, function (req, res) {
                 } else {
                   res.render("adminstudyhome", {
                     studyfields: returnedstudyfields,
+                    formlist,
                     studycats: returnedstudycats,
                     study: JSON.parse(JSON.stringify(returnedstudy)),
                   });

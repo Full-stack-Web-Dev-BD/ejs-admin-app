@@ -116,39 +116,46 @@ router.post("/adminsite", middleware.isLoggedin, function (req, res) {
 });
 
 //Adminsite EDIT route
-router.get("/adminsite/:id/edit", middleware.isLoggedin, function (req, res) {
-  sitefields.findById(req.params.id, function (err, returnedsitefield) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminsite");
-    } else {
-      sitecat.find({}, function (err, returnedcats) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.render("admsitefieldedit", {
-            editedsitefield: returnedsitefield,
-            sitecats: returnedcats,
-          });
-          let datetime = new Date();
-          let logDate = datetime;
-          let logUser = req.user.username;
-          let logAction = `On the page to edit the SITE FIELD - ${returnedsitefield.fieldname}. Did not edit yet.`;
-          let newlog = {
-            logDate: logDate,
-            logUser: logUser,
-            logAction: logAction,
-          };
-          logs.create(newlog, function (err, newlycreatedlog) {
-            if (err) {
-              console.log(err);
-            }
-          });
-        }
-      });
-    }
-  });
-});
+router.get(
+  "/adminsite/:id/edit",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    sitefields.findById(req.params.id, function (err, returnedsitefield) {
+      if (err) {
+        console.log(err);
+        res.redirect("/adminsite");
+      } else {
+        sitecat.find({}, function (err, returnedcats) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("admsitefieldedit", {
+              editedsitefield: returnedsitefield,
+              sitecats: returnedcats,
+              formlist,
+            });
+            let datetime = new Date();
+            let logDate = datetime;
+            let logUser = req.user.username;
+            let logAction = `On the page to edit the SITE FIELD - ${returnedsitefield.fieldname}. Did not edit yet.`;
+            let newlog = {
+              logDate: logDate,
+              logUser: logUser,
+              logAction: logAction,
+            };
+            logs.create(newlog, function (err, newlycreatedlog) {
+              if (err) {
+                console.log(err);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+);
 
 //Adminsite UPDATE route
 router.put("/adminsite/:id", middleware.isLoggedin, function (req, res) {
@@ -353,46 +360,53 @@ router.delete("/adminsitecat/:id", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/adminsiteconfig", middleware.isLoggedin, function (req, res) {
-  sitefields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedsitefields) {
-      if (err) {
-        console.log(err);
-      } else {
-        //studycat.find({}, function(err,returnedstudycats){
-        sitecat
-          .find({})
-          .sort("sitecatorder")
-          .exec(function (err, returnedsitecats) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.render("adminsiteconfig", {
-                siteadmin: returnedsitefields,
-                sitecats: returnedsitecats,
-              });
-              let datetime = new Date();
-              let logDate = datetime;
-              let logUser = req.user.username;
-              let logAction = `Visited SITE CREATION page.`;
-              let newlog = {
-                logDate: logDate,
-                logUser: logUser,
-                logAction: logAction,
-              };
-              logs.create(newlog, function (err, newlycreatedlog) {
-                if (err) {
-                  console.log(err);
-                }
-              });
-              console.log(returnedsitefields);
-            }
-          });
-      }
-    });
-});
+router.get(
+  "/adminsiteconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    sitefields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedsitefields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          sitecat
+            .find({})
+            .sort("sitecatorder")
+            .exec(function (err, returnedsitecats) {
+              if (err) {
+                console.log(err);
+              } else {
+                res.render("adminsiteconfig", {
+                  siteadmin: returnedsitefields,
+                  formlist,
+                  sitecats: returnedsitecats,
+                });
+                let datetime = new Date();
+                let logDate = datetime;
+                let logUser = req.user.username;
+                let logAction = `Visited SITE CREATION page.`;
+                let newlog = {
+                  logDate: logDate,
+                  logUser: logUser,
+                  logAction: logAction,
+                };
+                logs.create(newlog, function (err, newlycreatedlog) {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
+                console.log(returnedsitefields);
+              }
+            });
+        }
+      });
+  }
+);
 
 function cleansing(site) {
   var newsite = {};
@@ -435,7 +449,9 @@ router.post("/adminsiteconfig", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/adminsitehome", middleware.isLoggedin, function (req, res) {
+router.get("/adminsitehome", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   sitefields
     .find({})
     .sort("fieldorder")
@@ -459,6 +475,7 @@ router.get("/adminsitehome", middleware.isLoggedin, function (req, res) {
                     sitefields: returnedsitefields,
                     sitecats: returnedsitecats,
                     sites: JSON.parse(JSON.stringify(returnedsite)),
+                    formlist,
                   });
                   let datetime = new Date();
                   let logDate = datetime;

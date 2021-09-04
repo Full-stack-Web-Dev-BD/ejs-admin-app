@@ -85,27 +85,34 @@ router.post("/adminphase", middleware.isLoggedin, function (req, res) {
 });
 
 //Adminphase EDIT route
-router.get("/adminphase/:id/edit", middleware.isLoggedin, function (req, res) {
-  phasefields.findById(req.params.id, function (err, returnedphasefield) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminphase");
-    } else {
-      //console.log(req.params) //- Only displays ID because only is in the URL request
-      //console.log(returnedphasefield); // returns the JSON of the whole field.
-      phasecat.find({}, function (err, returnedcats) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.render("admphaseedit", {
-            returnedphasefields: returnedphasefield,
-            phasecats: returnedcats,
-          });
-        }
-      });
-    }
-  });
-});
+router.get(
+  "/adminphase/:id/edit",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    phasefields.findById(req.params.id, function (err, returnedphasefield) {
+      if (err) {
+        console.log(err);
+        res.redirect("/adminphase");
+      } else {
+        //console.log(req.params) //- Only displays ID because only is in the URL request
+        //console.log(returnedphasefield); // returns the JSON of the whole field.
+        phasecat.find({}, function (err, returnedcats) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("admphaseedit", {
+              formlist,
+              returnedphasefields: returnedphasefield,
+              phasecats: returnedcats,
+            });
+          }
+        });
+      }
+    });
+  }
+);
 
 //Adminphase UPDATE route
 router.put("/adminphase/:id", middleware.isLoggedin, function (req, res) {
@@ -148,7 +155,9 @@ router.delete("/adminphase/:id", middleware.isLoggedin, function (req, res) {
 });
 
 //adminphase category
-router.get("/adminphasecat", middleware.isLoggedin, function (req, res) {
+router.get("/adminphasecat", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   //Get all phase fields from DB
   phasecat
     .find({})
@@ -157,7 +166,7 @@ router.get("/adminphasecat", middleware.isLoggedin, function (req, res) {
       if (err) {
         console.log(err);
       } else {
-        res.render("adminphasecat", { phasecat: returnedphasecat });
+        res.render("adminphasecat", { formlist, phasecat: returnedphasecat });
       }
     });
 });
@@ -233,30 +242,37 @@ router.delete("/adminphasecat/:id", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/adminphaseconfig", middleware.isLoggedin, function (req, res) {
-  phasefields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedphasefields) {
-      if (err) {
-        console.log(err);
-      } else {
-        phasecat
-          .find({})
-          .sort("phasecatorder")
-          .exec(function (err, returnedphasecats) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.render("adminphaseconfig", {
-                phasefields: returnedphasefields,
-                phasecats: returnedphasecats,
-              });
-            }
-          });
-      }
-    });
-});
+router.get(
+  "/adminphaseconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    phasefields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedphasefields) {
+        if (err) {
+          console.log(err);
+        } else {
+          phasecat
+            .find({})
+            .sort("phasecatorder")
+            .exec(function (err, returnedphasecats) {
+              if (err) {
+                console.log(err);
+              } else {
+                res.render("adminphaseconfig", {
+                  formlist,
+                  phasefields: returnedphasefields,
+                  phasecats: returnedphasecats,
+                });
+              }
+            });
+        }
+      });
+  }
+);
 
 function cleansing(phase) {
   var newphase = {};
@@ -290,7 +306,9 @@ router.post("/adminphaseconfig", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/phase", middleware.isLoggedin, function (req, res) {
+router.get("/phase", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   phasefields
     .find({})
     .sort("fieldorder")
@@ -310,6 +328,7 @@ router.get("/phase", middleware.isLoggedin, function (req, res) {
                   console.log(err);
                 } else {
                   res.render("phasehome", {
+                    formlist,
                     phasefields: returnedphasefields,
                     phasecats: returnedphasecats,
                     phases: JSON.parse(JSON.stringify(returnedphase)),
@@ -334,7 +353,9 @@ router.delete("/phase/:id", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/phase/:id/edit", middleware.isLoggedin, function (req, res) {
+router.get("/phase/:id/edit", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   phasefields
     .find({})
     .sort("fieldorder")
@@ -355,6 +376,7 @@ router.get("/phase/:id/edit", middleware.isLoggedin, function (req, res) {
                   console.log(err);
                 } else {
                   res.render("phaseedit", {
+                    formlist,
                     returnedphasefields: returnedphasefields,
                     returnedphasecats: returnedphasecats,
                     returnedphase: JSON.parse(JSON.stringify(returnedphase)),

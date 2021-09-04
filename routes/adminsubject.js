@@ -118,33 +118,42 @@ router.post("/Adminsubject", middleware.isLoggedin, function (req, res) {
 });
 
 //adminsubject category
-router.get("/adminsubjectcat", middleware.isLoggedin, function (req, res) {
-  //Get all subject fields from DB
-  subjectcat
-    .find({})
-    .sort("subjectcatorder")
-    .exec(function (err, returnedsubjectcat) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.render("adminsubjectcat", { subjectcat: returnedsubjectcat });
-        let datetime = new Date();
-        let logDate = datetime;
-        let logUser = req.user.username;
-        let logAction = `Visited the CREATE SUBJECT CATEGORY page`;
-        let newlog = {
-          logDate: logDate,
-          logUser: logUser,
-          logAction: logAction,
-        };
-        logs.create(newlog, function (err, newlycreatedlog) {
-          if (err) {
-            console.log(err);
-          }
-        });
-      }
-    });
-});
+router.get(
+  "/adminsubjectcat",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    //Get all subject fields from DB
+    subjectcat
+      .find({})
+      .sort("subjectcatorder")
+      .exec(function (err, returnedsubjectcat) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render("adminsubjectcat", {
+            formlist,
+            subjectcat: returnedsubjectcat,
+          });
+          let datetime = new Date();
+          let logDate = datetime;
+          let logUser = req.user.username;
+          let logAction = `Visited the CREATE SUBJECT CATEGORY page`;
+          let newlog = {
+            logDate: logDate,
+            logUser: logUser,
+            logAction: logAction,
+          };
+          logs.create(newlog, function (err, newlycreatedlog) {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
+      });
+  }
+);
 
 router.post("/adminsubjectcat", middleware.isLoggedin, function (req, res) {
   var adminsubjectcat = req.body.adminsubjectcat;
@@ -370,45 +379,52 @@ router.delete(
   }
 );
 
-router.get("/adminsubjectconfig", middleware.isLoggedin, function (req, res) {
-  subjectfields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedsubjectfields) {
-      if (err) {
-        console.log(err);
-      } else {
-        //studycat.find({}, function(err,returnedstudycats){
-        subjectcat
-          .find({})
-          .sort("subjectcatorder")
-          .exec(function (err, returnedsubjectcats) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.render("adminsubjectconfig", {
-                subjectadmin: returnedsubjectfields,
-                subjectcats: returnedsubjectcats,
-              });
-              let datetime = new Date();
-              let logDate = datetime;
-              let logUser = req.user.username;
-              let logAction = `Visited the STUDY CREATION page`;
-              let newlog = {
-                logDate: logDate,
-                logUser: logUser,
-                logAction: logAction,
-              };
-              logs.create(newlog, function (err, newlycreatedlog) {
-                if (err) {
-                  console.log(err);
-                }
-              });
-            }
-          });
-      }
-    });
-});
+router.get(
+  "/adminsubjectconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    subjectfields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedsubjectfields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          subjectcat
+            .find({})
+            .sort("subjectcatorder")
+            .exec(function (err, returnedsubjectcats) {
+              if (err) {
+                console.log(err);
+              } else {
+                res.render("adminsubjectconfig", {
+                  subjectadmin: returnedsubjectfields,
+                  formlist,
+                  subjectcats: returnedsubjectcats,
+                });
+                let datetime = new Date();
+                let logDate = datetime;
+                let logUser = req.user.username;
+                let logAction = `Visited the STUDY CREATION page`;
+                let newlog = {
+                  logDate: logDate,
+                  logUser: logUser,
+                  logAction: logAction,
+                };
+                logs.create(newlog, function (err, newlycreatedlog) {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
+              }
+            });
+        }
+      });
+  }
+);
 
 function cleansing(subject) {
   var newsubject = {};
@@ -452,52 +468,59 @@ router.post("/adminsubjectconfig", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/adminsubjecthome", middleware.isLoggedin, function (req, res) {
-  subjectfields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedsubjectfields) {
-      if (err) {
-        console.log(err);
-      } else {
-        //studycat.find({}, function(err,returnedstudycats){
-        subjectcat
-          .find({})
-          .sort("subjectcatorder")
-          .exec(function (err, returnedsubjectcats) {
-            if (err) {
-              console.log(err);
-            } else {
-              subject.find({}, function (err, returnedsubject) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  res.render("adminsubjecthome", {
-                    subjectfields: returnedsubjectfields,
-                    subjectcats: returnedsubjectcats,
-                    subjects: JSON.parse(JSON.stringify(returnedsubject)),
-                  });
-                  let datetime = new Date();
-                  let logDate = datetime;
-                  let logUser = req.user.username;
-                  let logAction = `Visited the SUBJECT listing page (SUBJECT HOME)`;
-                  let newlog = {
-                    logDate: logDate,
-                    logUser: logUser,
-                    logAction: logAction,
-                  };
-                  logs.create(newlog, function (err, newlycreatedlog) {
-                    if (err) {
-                      console.log(err);
-                    }
-                  });
-                }
-              });
-            }
-          });
-      }
-    });
-});
+router.get(
+  "/adminsubjecthome",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    subjectfields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedsubjectfields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          subjectcat
+            .find({})
+            .sort("subjectcatorder")
+            .exec(function (err, returnedsubjectcats) {
+              if (err) {
+                console.log(err);
+              } else {
+                subject.find({}, function (err, returnedsubject) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("adminsubjecthome", {
+                      formlist,
+                      subjectfields: returnedsubjectfields,
+                      subjectcats: returnedsubjectcats,
+                      subjects: JSON.parse(JSON.stringify(returnedsubject)),
+                    });
+                    let datetime = new Date();
+                    let logDate = datetime;
+                    let logUser = req.user.username;
+                    let logAction = `Visited the SUBJECT listing page (SUBJECT HOME)`;
+                    let newlog = {
+                      logDate: logDate,
+                      logUser: logUser,
+                      logAction: logAction,
+                    };
+                    logs.create(newlog, function (err, newlycreatedlog) {
+                      if (err) {
+                        console.log(err);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  }
+);
 
 //adminsubject delete route
 router.delete(
@@ -623,7 +646,9 @@ router.put(
 // VISIT ROUTES
 //=====================================
 
-router.get("/Adminsubjecthome/:id/visit/new", function (req, res) {
+router.get("/Adminsubjecthome/:id/visit/new", async function (req, res) {
+  const formlist = await form_status.find();
+
   subject.findById(req.params.id, function (err, subject) {
     if (err) {
       console.log(err);
@@ -664,6 +689,7 @@ router.get("/Adminsubjecthome/:id/visit/new", function (req, res) {
                                     console.log(err);
                                   } else {
                                     res.render("visits/visit", {
+                                      formlist,
                                       visitcats: returnedvisitcats,
                                       visitfields: returnedvisitfields,
                                       subject: subject,

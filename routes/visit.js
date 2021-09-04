@@ -90,30 +90,39 @@ router.post("/adminvisit", middleware.isLoggedin, function (req, res) {
 });
 
 //Adminvisit EDIT route
-router.get("/adminvisit/:id/edit", middleware.isLoggedin, function (req, res) {
-  visitfields.findById(req.params.id, function (err, returnedvisitfield) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminvisit");
-    } else {
-      //console.log(req.params) //- Only displays ID because only is in the URL request
-      //console.log(returnedvisitfield); // returns the JSON of the whole field.
-      visitcat.find({}, function (err, returnedcats) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.render("admvisitfieldedit", {
-            editedvisitfield: returnedvisitfield,
-            visitcats: returnedcats,
-          });
-        }
-      });
-    }
-  });
-});
+router.get(
+  "/adminvisit/:id/edit",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    visitfields.findById(req.params.id, function (err, returnedvisitfield) {
+      if (err) {
+        console.log(err);
+        res.redirect("/adminvisit");
+      } else {
+        //console.log(req.params) //- Only displays ID because only is in the URL request
+        //console.log(returnedvisitfield); // returns the JSON of the whole field.
+        visitcat.find({}, function (err, returnedcats) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("admvisitfieldedit", {
+              formlist,
+              editedvisitfield: returnedvisitfield,
+              visitcats: returnedcats,
+            });
+          }
+        });
+      }
+    });
+  }
+);
 
 //Adminvisit UPDATE route
-router.put("/adminvisit/:id", middleware.isLoggedin, function (req, res) {
+router.put("/adminvisit/:id", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   visitfields.findByIdAndUpdate(
     req.params.id,
     {
@@ -140,20 +149,28 @@ router.put("/adminvisit/:id", middleware.isLoggedin, function (req, res) {
 });
 
 //adminvisit delete route
-router.delete("/adminvisit/:id", middleware.isLoggedin, function (req, res) {
-  visitfields.findByIdAndRemove(req.params.id, function (err) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminvisit");
-    } else {
-      console.log("Deleted row:" + req.params.id);
-      res.redirect("/adminvisit");
-    }
-  });
-});
+router.delete(
+  "/adminvisit/:id",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    visitfields.findByIdAndRemove(req.params.id, function (err) {
+      if (err) {
+        console.log(err);
+        res.redirect("/adminvisit");
+      } else {
+        console.log("Deleted row:" + req.params.id);
+        res.redirect("/adminvisit");
+      }
+    });
+  }
+);
 
 //adminvisit category
-router.get("/adminvisitcat", middleware.isLoggedin, function (req, res) {
+router.get("/adminvisitcat", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   visitcat
     .find({})
     .sort("visitcatorder")
@@ -161,12 +178,14 @@ router.get("/adminvisitcat", middleware.isLoggedin, function (req, res) {
       if (err) {
         console.log(err);
       } else {
-        res.render("adminvisitcat", { visitcat: returnedvisitcat });
+        res.render("adminvisitcat", { formlist, visitcat: returnedvisitcat });
       }
     });
 });
 
-router.post("/adminvisitcat", middleware.isLoggedin, function (req, res) {
+router.post("/adminvisitcat", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   var adminvisitcat = req.body.adminvisitcat;
   var visitcatorder = req.body.visitcatorder;
   var visitcatdetail = req.body.visitcatdetail;
@@ -182,7 +201,7 @@ router.post("/adminvisitcat", middleware.isLoggedin, function (req, res) {
     } else {
       console.log(newadminvisitcat);
       console.log(newlycreated_sc);
-      res.redirect("/adminvisitcat"); //redirects to GET route.
+      res.redirect("/adminvisitcat", { formlist }); //redirects to GET route.
     }
   });
 });
@@ -191,41 +210,49 @@ router.get(
   "/adminvisitcat/:id/edit",
   middleware.isLoggedin,
   function (req, res) {
-    visitcat.findById(req.params.id, function (err, returnedcat) {
+    visitcat.findById(req.params.id, async function (err, returnedcat) {
+      const formlist = await form_status.find();
+
       if (err) {
         console.log(err);
         res.redirect("/adminvisittcat");
       } else {
         //console.log(req.params) //- Only displays ID because only is in the URL request
         //console.log(returnedstudyfield); // returns the JSON of the whole field.
-        res.render("admvisitcatedit", { editedcat: returnedcat });
+        res.render("admvisitcatedit", { formlist, editedcat: returnedcat });
       }
     });
   }
 );
 
-router.put("/adminvisitcat/:id", middleware.isLoggedin, function (req, res) {
-  visitcat.findByIdAndUpdate(
-    req.params.id,
-    {
-      visitcatname: req.body.catname,
-      visitcatdetail: req.body.visitcatdetail,
-      visitcatorder: req.body.visitcatorder,
-    },
-    function (err, returnedcat) {
-      if (err) {
-        console.log(err);
-        res.redirect("/adminvisitcat");
-      } else {
-        console.log("Success Update");
-        console.log("id" + req.params.id);
-        console.log("visitcatdetails is:  " + req.body.visitcatdetail);
-        console.log(returnedcat);
-        res.redirect("/adminvisitcat");
+router.put(
+  "/adminvisitcat/:id",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    visitcat.findByIdAndUpdate(
+      req.params.id,
+      {
+        visitcatname: req.body.catname,
+        visitcatdetail: req.body.visitcatdetail,
+        visitcatorder: req.body.visitcatorder,
+      },
+      function (err, returnedcat) {
+        if (err) {
+          console.log(err);
+          res.redirect("/adminvisitcat");
+        } else {
+          console.log("Success Update");
+          console.log("id" + req.params.id);
+          console.log("visitcatdetails is:  " + req.body.visitcatdetail);
+          console.log(returnedcat);
+          res.redirect("/adminvisitcat");
+        }
       }
-    }
-  );
-});
+    );
+  }
+);
 
 router.delete("/adminvisitcat/:id", middleware.isLoggedin, function (req, res) {
   visitcat.findByIdAndRemove(req.params.id, function (err) {
@@ -239,16 +266,21 @@ router.delete("/adminvisitcat/:id", middleware.isLoggedin, function (req, res) {
   });
 });
 
-router.get("/visit", middleware.isLoggedin, function (req, res) {
+router.get("/visit", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   var returnedsubjects = [];
   var returnedvisits = [];
   res.render("visit", {
+    formlist,
     returnedsubjects: returnedsubjects,
     visits: returnedvisits,
   });
 });
 
-router.post("/visit", middleware.isLoggedin, function (req, res) {
+router.post("/visit", middleware.isLoggedin, async function (req, res) {
+  const formlist = await form_status.find();
+
   var text = req.body.user;
   subject
     .find({ $text: { $search: text } })
@@ -271,71 +303,87 @@ router.post("/visit", middleware.isLoggedin, function (req, res) {
           res.render("visit", {
             returnedsubjects: returnedsubjects,
             visits: returnedvisits,
+            formlist,
           });
         }
       }
     });
 });
 
-router.get("/visit/subject/:id", middleware.isLoggedin, function (req, res) {
-  visit
-    .find({ Subject: req.params.id })
-    .populate("Study")
-    .populate("Site")
-    .populate("Phase")
-    .populate("Subject")
-    .sort("Visit_date")
-    .exec(function (err, returnedvisits) {
-      var returnedsubjects = [];
-      if (err) {
-        console.log(err);
-      } else {
-        visitcat
-          .find({})
-          .sort("visitcatorder")
-          .exec(function (err, returnedvisitcats) {
-            if (err) {
-              console.log(err);
-            } else {
-              visitfields
-                .find({})
-                .sort("fieldorder")
-                .exec(function (err, returnedvisitfields) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    res.render("visit", {
-                      visitfields: returnedvisitfields,
-                      visitcats: returnedvisitcats,
-                      visits: JSON.parse(JSON.stringify(returnedvisits)),
-                      returnedsubjects: returnedsubjects,
-                    });
-                  }
-                });
-            }
-          });
-      }
-    });
-});
+router.get(
+  "/visit/subject/:id",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    visit
+      .find({ Subject: req.params.id })
+      .populate("Study")
+      .populate("Site")
+      .populate("Phase")
+      .populate("Subject")
+      .sort("Visit_date")
+      .exec(function (err, returnedvisits) {
+        var returnedsubjects = [];
+        if (err) {
+          console.log(err);
+        } else {
+          visitcat
+            .find({})
+            .sort("visitcatorder")
+            .exec(function (err, returnedvisitcats) {
+              if (err) {
+                console.log(err);
+              } else {
+                visitfields
+                  .find({})
+                  .sort("fieldorder")
+                  .exec(function (err, returnedvisitfields) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      res.render("visit", {
+                        visitfields: returnedvisitfields,
+                        visitcats: returnedvisitcats,
+                        visits: JSON.parse(JSON.stringify(returnedvisits)),
+                        formlist,
+                        returnedsubjects: returnedsubjects,
+                      });
+                    }
+                  });
+              }
+            });
+        }
+      });
+  }
+);
 
 //visit delete route
-router.delete("/visit/subject/:id", middleware.isLoggedin, function (req, res) {
-  visit.findByIdAndRemove(req.params.id, function (err) {
-    if (err) {
-      console.log(err);
-      res.redirect("/visit");
-    } else {
-      console.log("Deleted row:" + req.params.id);
-      res.redirect("/visit");
-    }
-  });
-});
+router.delete(
+  "/visit/subject/:id",
+  middleware.isLoggedin,
+  async function (req, res) {
+    const formlist = await form_status.find();
+
+    visit.findByIdAndRemove(req.params.id, function (err) {
+      if (err) {
+        console.log(err);
+        res.redirect("/visit");
+      } else {
+        console.log("Deleted row:" + req.params.id);
+        res.redirect("/visit");
+      }
+    });
+  }
+);
 
 //visit EDIT route
 router.get(
   "/visit/subject/:id/edit",
   middleware.isLoggedin,
-  function (req, res) {
+  async function (req, res) {
+    const formlist = await form_status.find();
+
     visitfields
       .find({})
       .sort("fieldorder")
@@ -384,6 +432,7 @@ router.get(
                                         console.log(err);
                                       } else {
                                         res.render("adminvisitedit", {
+                                          formlist,
                                           returnedstudy: returnedstudy,
                                           returnedsite: returnedsite,
                                           returnedphase: returnedphase,
@@ -409,20 +458,24 @@ router.get(
   }
 );
 
-router.put("/visit/subject/:id", middleware.isLoggedin, function (req, res) {
-  visit.findByIdAndUpdate(
-    req.params.id,
-    req.body.returnedvisit,
-    function (err, returnedvisit) {
-      if (err) {
-        console.log(err);
-        res.redirect("/visit");
-      } else {
-        console.log("Success Update");
-        res.redirect("/visit");
+router.put(
+  "/visit/subject/:id",
+  middleware.isLoggedin,
+  async function (req, res) {
+    visit.findByIdAndUpdate(
+      req.params.id,
+      req.body.returnedvisit,
+      function (err, returnedvisit) {
+        if (err) {
+          console.log(err);
+          res.redirect("/visit");
+        } else {
+          console.log("Success Update");
+          res.redirect("/visit");
+        }
       }
-    }
-  );
-});
+    );
+  }
+);
 
 module.exports = router;
