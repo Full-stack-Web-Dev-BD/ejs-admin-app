@@ -3,6 +3,7 @@ var router = express.Router();
 var sitefields = require("../models/sitefield");
 var sitecat = require("../models/sitecat");
 var site = require("../models/site");
+var site_staged = require("../models/site_staged");
 var logs = require("../models/logs");
 var middleware = require("../middleware"); //index.js is a special name. So you don't have to explicitly mention the filename.
 var form_status = require("../models/form_status");
@@ -427,76 +428,159 @@ function cleansing(site) {
   return newsite;
 }
 
-router.post("/adminsiteconfig", middleware.isLoggedin, function (req, res) {
-  //create a new studycategory and save it to the database.
-  site.create(cleansing(req.body.site), function (err, newsite) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminsiteconfig");
-    } else {
-      res.redirect("/adminsiteconfig"); //redirects to GET route.
-      let datetime = new Date();
-      let logDate = datetime;
-      let logUser = req.user.username;
-      let logAction = `Created a new SITE - ${newsite.Site_name}.`;
-      let newlog = { logDate: logDate, logUser: logUser, logAction: logAction };
-      logs.create(newlog, function (err, newlycreatedlog) {
+router.post(
+  "/adminsiteconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    //create a new studycategory and save it to the database.
+
+    const formlist = await form_status.find();
+
+    if (formlist?.length !== 5) {
+      site_staged.create(cleansing(req.body.site), function (err, newsite) {
         if (err) {
           console.log(err);
+          res.redirect("/adminsiteconfig");
+        } else {
+          res.redirect("/adminsiteconfig"); //redirects to GET route.
+          let datetime = new Date();
+          let logDate = datetime;
+          let logUser = req.user.username;
+          let logAction = `Created a new SITE - ${newsite.Site_name}.`;
+          let newlog = {
+            logDate: logDate,
+            logUser: logUser,
+            logAction: logAction,
+          };
+          logs.create(newlog, function (err, newlycreatedlog) {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
+      });
+    } else {
+      site.create(cleansing(req.body.site), function (err, newsite) {
+        if (err) {
+          console.log(err);
+          res.redirect("/adminsiteconfig");
+        } else {
+          res.redirect("/adminsiteconfig"); //redirects to GET route.
+          let datetime = new Date();
+          let logDate = datetime;
+          let logUser = req.user.username;
+          let logAction = `Created a new SITE - ${newsite.Site_name}.`;
+          let newlog = {
+            logDate: logDate,
+            logUser: logUser,
+            logAction: logAction,
+          };
+          logs.create(newlog, function (err, newlycreatedlog) {
+            if (err) {
+              console.log(err);
+            }
+          });
         }
       });
     }
-  });
-});
+  }
+);
 
 router.get("/adminsitehome", middleware.isLoggedin, async function (req, res) {
   const formlist = await form_status.find();
-
-  sitefields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedsitefields) {
-      if (err) {
-        console.log(err);
-      } else {
-        //studycat.find({}, function(err,returnedstudycats){
-        sitecat
-          .find({})
-          .sort("sitecatorder")
-          .exec(function (err, returnedsitecats) {
-            if (err) {
-              console.log(err);
-            } else {
-              site.find({}, function (err, returnedsite) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  res.render("adminsitehome", {
-                    sitefields: returnedsitefields,
-                    sitecats: returnedsitecats,
-                    sites: JSON.parse(JSON.stringify(returnedsite)),
-                    formlist,
-                  });
-                  let datetime = new Date();
-                  let logDate = datetime;
-                  let logUser = req.user.username;
-                  let logAction = `Visited SITES listing page (SITE HOME)`;
-                  let newlog = {
-                    logDate: logDate,
-                    logUser: logUser,
-                    logAction: logAction,
-                  };
-                  logs.create(newlog, function (err, newlycreatedlog) {
-                    if (err) {
-                      console.log(err);
-                    }
-                  });
-                }
-              });
-            }
-          });
-      }
-    });
+  if (formlist?.length !== 5) {
+    sitefields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedsitefields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          sitecat
+            .find({})
+            .sort("sitecatorder")
+            .exec(function (err, returnedsitecats) {
+              if (err) {
+                console.log(err);
+              } else {
+                site_staged.find({}, function (err, returnedsite) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("adminsitehome", {
+                      sitefields: returnedsitefields,
+                      sitecats: returnedsitecats,
+                      sites: JSON.parse(JSON.stringify(returnedsite)),
+                      formlist,
+                    });
+                    let datetime = new Date();
+                    let logDate = datetime;
+                    let logUser = req.user.username;
+                    let logAction = `Visited SITES listing page (SITE HOME)`;
+                    let newlog = {
+                      logDate: logDate,
+                      logUser: logUser,
+                      logAction: logAction,
+                    };
+                    logs.create(newlog, function (err, newlycreatedlog) {
+                      if (err) {
+                        console.log(err);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  } else {
+    sitefields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedsitefields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          sitecat
+            .find({})
+            .sort("sitecatorder")
+            .exec(function (err, returnedsitecats) {
+              if (err) {
+                console.log(err);
+              } else {
+                site.find({}, function (err, returnedsite) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("adminsitehome", {
+                      sitefields: returnedsitefields,
+                      sitecats: returnedsitecats,
+                      sites: JSON.parse(JSON.stringify(returnedsite)),
+                      formlist,
+                    });
+                    let datetime = new Date();
+                    let logDate = datetime;
+                    let logUser = req.user.username;
+                    let logAction = `Visited SITES listing page (SITE HOME)`;
+                    let newlog = {
+                      logDate: logDate,
+                      logUser: logUser,
+                      logAction: logAction,
+                    };
+                    logs.create(newlog, function (err, newlycreatedlog) {
+                      if (err) {
+                        console.log(err);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  }
 });
 
 //adminsite delete route

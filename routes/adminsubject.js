@@ -3,6 +3,7 @@ var router = express.Router();
 var subjectfields = require("../models/subjectfield");
 var subjectcat = require("../models/subjectcat");
 var subject = require("../models/subject");
+var subject_staged = require("../models/subject_staged");
 var study = require("../models/study");
 var site = require("../models/site");
 var phase = require("../models/phase");
@@ -445,80 +446,165 @@ function cleansing(subject) {
   return newsubject;
 }
 
-router.post("/adminsubjectconfig", middleware.isLoggedin, function (req, res) {
-  //create a new studycategory and save it to the database.
-  subject.create(cleansing(req.body.subject), function (err, newsubject) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminsubjectconfig");
+router.post(
+  "/adminsubjectconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    //create a new studycategory and save it to the database.
+    const formlist = await form_status.find();
+    if (formlist?.length !== 5) {
+      subject_staged.create(
+        cleansing(req.body.subject),
+        function (err, newsubject) {
+          if (err) {
+            console.log(err);
+            res.redirect("/adminsubjectconfig");
+          } else {
+            console.log(req.body.subject);
+            res.redirect("/adminsubjectconfig"); //redirects to GET route.
+            let datetime = new Date();
+            let logDate = datetime;
+            let logUser = req.user.username;
+            let logAction = `Created a Subject - ${newsubject.Subject_Name}`;
+            let newlog = {
+              logDate: logDate,
+              logUser: logUser,
+              logAction: logAction,
+            };
+            logs.create(newlog, function (err, newlycreatedlog) {
+              if (err) {
+                console.log(err);
+              }
+            });
+          }
+        }
+      );
     } else {
-      console.log(req.body.subject);
-      res.redirect("/adminsubjectconfig"); //redirects to GET route.
-      let datetime = new Date();
-      let logDate = datetime;
-      let logUser = req.user.username;
-      let logAction = `Created a Subject - ${newsubject.Subject_Name}`;
-      let newlog = { logDate: logDate, logUser: logUser, logAction: logAction };
-      logs.create(newlog, function (err, newlycreatedlog) {
+      subject.create(cleansing(req.body.subject), function (err, newsubject) {
         if (err) {
           console.log(err);
+          res.redirect("/adminsubjectconfig");
+        } else {
+          console.log(req.body.subject);
+          res.redirect("/adminsubjectconfig"); //redirects to GET route.
+          let datetime = new Date();
+          let logDate = datetime;
+          let logUser = req.user.username;
+          let logAction = `Created a Subject - ${newsubject.Subject_Name}`;
+          let newlog = {
+            logDate: logDate,
+            logUser: logUser,
+            logAction: logAction,
+          };
+          logs.create(newlog, function (err, newlycreatedlog) {
+            if (err) {
+              console.log(err);
+            }
+          });
         }
       });
     }
-  });
-});
+  }
+);
 
 router.get(
   "/adminsubjecthome",
   middleware.isLoggedin,
   async function (req, res) {
     const formlist = await form_status.find();
-
-    subjectfields
-      .find({})
-      .sort("fieldorder")
-      .exec(function (err, returnedsubjectfields) {
-        if (err) {
-          console.log(err);
-        } else {
-          //studycat.find({}, function(err,returnedstudycats){
-          subjectcat
-            .find({})
-            .sort("subjectcatorder")
-            .exec(function (err, returnedsubjectcats) {
-              if (err) {
-                console.log(err);
-              } else {
-                subject.find({}, function (err, returnedsubject) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    res.render("adminsubjecthome", {
-                      formlist,
-                      subjectfields: returnedsubjectfields,
-                      subjectcats: returnedsubjectcats,
-                      subjects: JSON.parse(JSON.stringify(returnedsubject)),
-                    });
-                    let datetime = new Date();
-                    let logDate = datetime;
-                    let logUser = req.user.username;
-                    let logAction = `Visited the SUBJECT listing page (SUBJECT HOME)`;
-                    let newlog = {
-                      logDate: logDate,
-                      logUser: logUser,
-                      logAction: logAction,
-                    };
-                    logs.create(newlog, function (err, newlycreatedlog) {
-                      if (err) {
-                        console.log(err);
-                      }
-                    });
-                  }
-                });
-              }
-            });
-        }
-      });
+    if (formlist?.length !== 5) {
+      subjectfields
+        .find({})
+        .sort("fieldorder")
+        .exec(function (err, returnedsubjectfields) {
+          if (err) {
+            console.log(err);
+          } else {
+            //studycat.find({}, function(err,returnedstudycats){
+            subjectcat
+              .find({})
+              .sort("subjectcatorder")
+              .exec(function (err, returnedsubjectcats) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  subject_staged.find({}, function (err, returnedsubject) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      res.render("adminsubjecthome", {
+                        formlist,
+                        subjectfields: returnedsubjectfields,
+                        subjectcats: returnedsubjectcats,
+                        subjects: JSON.parse(JSON.stringify(returnedsubject)),
+                      });
+                      let datetime = new Date();
+                      let logDate = datetime;
+                      let logUser = req.user.username;
+                      let logAction = `Visited the SUBJECT listing page (SUBJECT HOME)`;
+                      let newlog = {
+                        logDate: logDate,
+                        logUser: logUser,
+                        logAction: logAction,
+                      };
+                      logs.create(newlog, function (err, newlycreatedlog) {
+                        if (err) {
+                          console.log(err);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+          }
+        });
+    } else {
+      subjectfields
+        .find({})
+        .sort("fieldorder")
+        .exec(function (err, returnedsubjectfields) {
+          if (err) {
+            console.log(err);
+          } else {
+            //studycat.find({}, function(err,returnedstudycats){
+            subjectcat
+              .find({})
+              .sort("subjectcatorder")
+              .exec(function (err, returnedsubjectcats) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  subject.find({}, function (err, returnedsubject) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      res.render("adminsubjecthome", {
+                        formlist,
+                        subjectfields: returnedsubjectfields,
+                        subjectcats: returnedsubjectcats,
+                        subjects: JSON.parse(JSON.stringify(returnedsubject)),
+                      });
+                      let datetime = new Date();
+                      let logDate = datetime;
+                      let logUser = req.user.username;
+                      let logAction = `Visited the SUBJECT listing page (SUBJECT HOME)`;
+                      let newlog = {
+                        logDate: logDate,
+                        logUser: logUser,
+                        logAction: logAction,
+                      };
+                      logs.create(newlog, function (err, newlycreatedlog) {
+                        if (err) {
+                          console.log(err);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+          }
+        });
+    }
   }
 );
 

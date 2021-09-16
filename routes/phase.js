@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var phase = require("../models/phase");
+var phase_staged = require("../models/phase_staged");
 var phasecat = require("../models/phasecat");
 var phasefields = require("../models/phasefield");
 var middleware = require("../middleware"); //index.js is a special name. So you don't have to explicitly mention the filename.
@@ -293,52 +294,103 @@ function cleansing(phase) {
   return newphase;
 }
 
-router.post("/adminphaseconfig", middleware.isLoggedin, function (req, res) {
-  //create a new phasecategory and save it to the database.
-  phase.create(cleansing(req.body.phase), function (err, newphase) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminphaseconfig");
+router.post(
+  "/adminphaseconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    //create a new phasecategory and save it to the database.
+
+    const formlist = await form_status.find();
+
+    if (formlist?.length !== 5) {
+      phase_staged.create(cleansing(req.body.phase), function (err, newphase) {
+        if (err) {
+          console.log(err);
+          res.redirect("/adminphaseconfig");
+        } else {
+          console.log(req.body.phase);
+          res.redirect("/adminphaseconfig"); //redirects to GET route.
+        }
+      });
     } else {
-      console.log(req.body.phase);
-      res.redirect("/adminphaseconfig"); //redirects to GET route.
+      phase.create(cleansing(req.body.phase), function (err, newphase) {
+        if (err) {
+          console.log(err);
+          res.redirect("/adminphaseconfig");
+        } else {
+          console.log(req.body.phase);
+          res.redirect("/adminphaseconfig"); //redirects to GET route.
+        }
+      });
     }
-  });
-});
+  }
+);
 
 router.get("/phase", middleware.isLoggedin, async function (req, res) {
   const formlist = await form_status.find();
-
-  phasefields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedphasefields) {
-      if (err) {
-        console.log(err);
-      } else {
-        phasecat
-          .find({})
-          .sort("phasecatorder")
-          .exec(function (err, returnedphasecats) {
-            if (err) {
-              console.log(err);
-            } else {
-              phase.find({}, function (err, returnedphase) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  res.render("phasehome", {
-                    formlist,
-                    phasefields: returnedphasefields,
-                    phasecats: returnedphasecats,
-                    phases: JSON.parse(JSON.stringify(returnedphase)),
-                  });
-                }
-              });
-            }
-          });
-      }
-    });
+  if (formlist?.length !== 5) {
+    phasefields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedphasefields) {
+        if (err) {
+          console.log(err);
+        } else {
+          phasecat
+            .find({})
+            .sort("phasecatorder")
+            .exec(function (err, returnedphasecats) {
+              if (err) {
+                console.log(err);
+              } else {
+                phase_staged.find({}, function (err, returnedphase) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("phasehome", {
+                      formlist,
+                      phasefields: returnedphasefields,
+                      phasecats: returnedphasecats,
+                      phases: JSON.parse(JSON.stringify(returnedphase)),
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  } else {
+    phasefields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedphasefields) {
+        if (err) {
+          console.log(err);
+        } else {
+          phasecat
+            .find({})
+            .sort("phasecatorder")
+            .exec(function (err, returnedphasecats) {
+              if (err) {
+                console.log(err);
+              } else {
+                phase.find({}, function (err, returnedphase) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("phasehome", {
+                      formlist,
+                      phasefields: returnedphasefields,
+                      phasecats: returnedphasecats,
+                      phases: JSON.parse(JSON.stringify(returnedphase)),
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  }
 });
 
 router.delete("/phase/:id", middleware.isLoggedin, function (req, res) {

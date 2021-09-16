@@ -3,6 +3,7 @@ var router = express.Router();
 var studyfields = require("../models/studyfield");
 var studycat = require("../models/studycat");
 var study = require("../models/study");
+var study_staged = require("../models/study_staged");
 var logs = require("../models/logs");
 var middleware = require("../middleware"); //index.js is a special name. So you don't have to explicitly mention the filename.
 var form_status = require("../models/form_status");
@@ -292,28 +293,65 @@ function cleansing(study) {
   return newstudy;
 }
 
-router.post("/adminstudyconfig", middleware.isLoggedin, function (req, res) {
-  //create a new studycategory and save it to the database.
-  study.create(cleansing(req.body.study), function (err, newstudy) {
-    if (err) {
-      console.log(err);
-      res.redirect("/adminstudyconfig");
-    } else {
-      console.log(req.body.study);
-      res.redirect("/adminstudyconfig"); //redirects to GET route.
-      let datetime = new Date();
-      let logDate = datetime;
-      let logUser = req.user.username;
-      let logAction = `Created a STUDY - ${newstudy.Study_name}`;
-      let newlog = { logDate: logDate, logUser: logUser, logAction: logAction };
-      logs.create(newlog, function (err, newlycreatedlog) {
+router.post(
+  "/adminstudyconfig",
+  middleware.isLoggedin,
+  async function (req, res) {
+    //create a new studycategory and save it to the database.
+    // Production or Development
+    const formlist = await form_status.find();
+
+    if (formlist?.length !== 5) {
+      study_staged.create(cleansing(req.body.study), function (err, newstudy) {
         if (err) {
           console.log(err);
+          res.redirect("/adminstudyconfig");
+        } else {
+          console.log(req.body.study);
+          res.redirect("/adminstudyconfig"); //redirects to GET route.
+          let datetime = new Date();
+          let logDate = datetime;
+          let logUser = req.user.username;
+          let logAction = `Created a STUDY - ${newstudy.Study_name}`;
+          let newlog = {
+            logDate: logDate,
+            logUser: logUser,
+            logAction: logAction,
+          };
+          logs.create(newlog, function (err, newlycreatedlog) {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
+      });
+    } else {
+      study.create(cleansing(req.body.study), function (err, newstudy) {
+        if (err) {
+          console.log(err);
+          res.redirect("/adminstudyconfig");
+        } else {
+          console.log(req.body.study);
+          res.redirect("/adminstudyconfig"); //redirects to GET route.
+          let datetime = new Date();
+          let logDate = datetime;
+          let logUser = req.user.username;
+          let logAction = `Created a STUDY - ${newstudy.Study_name}`;
+          let newlog = {
+            logDate: logDate,
+            logUser: logUser,
+            logAction: logAction,
+          };
+          logs.create(newlog, function (err, newlycreatedlog) {
+            if (err) {
+              console.log(err);
+            }
+          });
         }
       });
     }
-  });
-});
+  }
+);
 
 //adminstudy category
 router.get("/adminstudycat", middleware.isLoggedin, async function (req, res) {
@@ -463,52 +501,99 @@ router.delete("/adminstudycat/:id", middleware.isLoggedin, function (req, res) {
 
 router.get("/adminstudyhome", middleware.isLoggedin, async function (req, res) {
   const formlist = await form_status.find();
-
-  studyfields
-    .find({})
-    .sort("fieldorder")
-    .exec(function (err, returnedstudyfields) {
-      if (err) {
-        console.log(err);
-      } else {
-        //studycat.find({}, function(err,returnedstudycats){
-        studycat
-          .find({})
-          .sort("studycatorder")
-          .exec(function (err, returnedstudycats) {
-            if (err) {
-              console.log(err);
-            } else {
-              study.find({}, function (err, returnedstudy) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  res.render("adminstudyhome", {
-                    studyfields: returnedstudyfields,
-                    formlist,
-                    studycats: returnedstudycats,
-                    study: JSON.parse(JSON.stringify(returnedstudy)),
-                  });
-                  let datetime = new Date();
-                  let logDate = datetime;
-                  let logUser = req.user.username;
-                  let logAction = `Visited the STUDY listing page (STUDY HOME)`;
-                  let newlog = {
-                    logDate: logDate,
-                    logUser: logUser,
-                    logAction: logAction,
-                  };
-                  logs.create(newlog, function (err, newlycreatedlog) {
-                    if (err) {
-                      console.log(err);
-                    }
-                  });
-                }
-              });
-            }
-          });
-      }
-    });
+  if (formlist?.length !== 5) {
+    studyfields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedstudyfields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          studycat
+            .find({})
+            .sort("studycatorder")
+            .exec(function (err, returnedstudycats) {
+              if (err) {
+                console.log(err);
+              } else {
+                study_staged.find({}, function (err, returnedstudy) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("adminstudyhome", {
+                      studyfields: returnedstudyfields,
+                      formlist,
+                      studycats: returnedstudycats,
+                      study: JSON.parse(JSON.stringify(returnedstudy)),
+                    });
+                    let datetime = new Date();
+                    let logDate = datetime;
+                    let logUser = req.user.username;
+                    let logAction = `Visited the STUDY listing page (STUDY HOME)`;
+                    let newlog = {
+                      logDate: logDate,
+                      logUser: logUser,
+                      logAction: logAction,
+                    };
+                    logs.create(newlog, function (err, newlycreatedlog) {
+                      if (err) {
+                        console.log(err);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  } else {
+    studyfields
+      .find({})
+      .sort("fieldorder")
+      .exec(function (err, returnedstudyfields) {
+        if (err) {
+          console.log(err);
+        } else {
+          //studycat.find({}, function(err,returnedstudycats){
+          studycat
+            .find({})
+            .sort("studycatorder")
+            .exec(function (err, returnedstudycats) {
+              if (err) {
+                console.log(err);
+              } else {
+                study.find({}, function (err, returnedstudy) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    res.render("adminstudyhome", {
+                      studyfields: returnedstudyfields,
+                      formlist,
+                      studycats: returnedstudycats,
+                      study: JSON.parse(JSON.stringify(returnedstudy)),
+                    });
+                    let datetime = new Date();
+                    let logDate = datetime;
+                    let logUser = req.user.username;
+                    let logAction = `Visited the STUDY listing page (STUDY HOME)`;
+                    let newlog = {
+                      logDate: logDate,
+                      logUser: logUser,
+                      logAction: logAction,
+                    };
+                    logs.create(newlog, function (err, newlycreatedlog) {
+                      if (err) {
+                        console.log(err);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+        }
+      });
+  }
 });
 
 //adminstudy delete route
